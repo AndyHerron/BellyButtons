@@ -74,13 +74,17 @@ function buildCharts(sample) {
 
     // 8. Create the trace for the bar chart. 
     // var barData = [
-
-   // ];
+        // x: [],
+        // y: [],
+        // type: "hbar"
+    // ];
     // 9. Create the layout for the bar chart. 
-   // var barLayout = {
-     
-   // };
+    // var barLayout = {
+      // title: "Top 10 OTU samples",
+      // xaxis: {title: "bacteria count"},
+      // yaxis: {title: "OTU type"}
+    // };
     // 10. Use Plotly to plot the data with the layout. 
-    
+    Plotly.newPlot("bar", [barData], barLayout);
   });
 };
