@@ -3,7 +3,7 @@ function init() {
   var selector = d3.select("#selDataset");
   // Use the list of sample names to populate the select options
   d3.json("samples.json").then((data) => {
-    console.log(data);
+    // console.log(data);
     var sampleNames = data.names;
     sampleNames.forEach((sample) => {
       selector
@@ -14,7 +14,7 @@ function init() {
 
     // Use the first sample from the list to build the initial plots
     var firstSample = sampleNames[0];
-    // buildCharts(firstSample);
+    buildCharts(firstSample);
     buildMetadata(firstSample);
   });
 };
@@ -26,7 +26,7 @@ init();
 // this function is called from the HTML file
 function optionChanged(newSample) {
   buildMetadata(newSample);
-  // buildCharts(newSample);
+  buildCharts(newSample);
 };
 
 // Demographics Panel 
@@ -47,7 +47,6 @@ function buildMetadata(sample) {
     Object.entries(result).forEach(([key, value]) => {
       PANEL.append("h6").text(`${key.toUpperCase()}: ${value}`);
     });
-
   });
 }
 
@@ -59,31 +58,49 @@ function buildCharts(sample) {
       var sampleValues = data.samples
     // 4. Create a variable that filters the samples for the object with the desired sample number.
       var filteredSamples = sampleValues.filter(sampleObj => sampleObj.id == sample);
+
     //  5. Create a variable that holds the first sample in the array.
       var oneSample = filteredSamples[0];
-      console.log(oneSample);
+      // var oneSample = sampleObj[0];
+      
     // 6. Create variables that hold the otu_ids, otu_labels, and sample_values.
       var my_otu_ids = oneSample.otu_ids
-      var my_otu_labels = oneSample.my_otu_labels
+      // console.log(my_otu_ids);
+
+      var my_otu_labels = oneSample.otu_labels
+      // console.log(my_otu_labels);
+
       var my_sample_values = oneSample.sample_values
+
     // 7. Create the yticks for the bar chart.
     // Hint: Get the the top 10 otu_ids and map them in descending order  
     //  so the otu_ids with the most bacteria are last. 
+    my_sample_values.sort((firstNum, secondNum) => secondNum - firstNum);
+    // console.log('Sorted with Arrow Function', my_sample_values);
+    // get the top 10 OTU_IDs
+    var top10 = my_otu_ids.slice(0, 10);
+    console.log(top10);
 
-    var yticks = 
+// supposed to chain the slice() method with map() and reverse() functions to retrieve the top10 otu_ids in descending order.
 
-    // 8. Create the trace for the bar chart. 
-    // var barData = [
-        // x: [],
-        // y: [],
-        // type: "hbar"
-    // ];
+  // var yticks = 
+
+   // 8. Create the trace for the bar chart. 
+    var trace1 ={
+      x: top10.map(object => object.sample_values),
+      y: top10.map(object => object.otu_ids),
+      type: "bar",
+      orientation: "h"
+    };
+
+    var barData = [trace1];
+
     // 9. Create the layout for the bar chart. 
-    // var barLayout = {
-      // title: "Top 10 OTU samples",
-      // xaxis: {title: "bacteria count"},
-      // yaxis: {title: "OTU type"}
-    // };
+    var barLayout = {
+      title: "Top 10 OTU samples",
+      xaxis: {title: "bacteria count"},
+      yaxis: {title: "OTU type"}
+     };
     // 10. Use Plotly to plot the data with the layout. 
     Plotly.newPlot("bar", [barData], barLayout);
   });
